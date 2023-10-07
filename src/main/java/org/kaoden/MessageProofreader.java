@@ -7,10 +7,16 @@ import java.util.*;
 
 public class MessageProofreader {
 
-    public List<String> getCorrectedMessages() {
+    public List<String> getCorrectedMessages(String dataFileURL, String replacementFilePath) {
         List<OriginalMessage> originalMessagesList =
-                deleteDuplicatedOriginalMessages(JsonReader.readOriginalMessages());
-        return retrieveModifiedMessages(JsonReader.readUserMessagesFromAPI(), originalMessagesList);
+                deleteDuplicatedOriginalMessages(JsonReader.readOriginalMessages(replacementFilePath));
+        return retrieveModifiedMessages(JsonReader.readUserMessagesFromAPI(dataFileURL), originalMessagesList);
+    }
+
+    public List<String> getCorrectedMessagesFromLocalFile(String dataFilePath, String replacementFilePath) {
+        List<OriginalMessage> originalMessagesList =
+                deleteDuplicatedOriginalMessages(JsonReader.readOriginalMessages(replacementFilePath));
+        return retrieveModifiedMessages(JsonReader.readUserMessages(dataFilePath), originalMessagesList);
     }
 
     private List<OriginalMessage> deleteDuplicatedOriginalMessages(List<OriginalMessage> originalMessagesList) {
@@ -36,11 +42,9 @@ public class MessageProofreader {
 
     private List<String> retrieveModifiedMessages(String[] userMessages, List<OriginalMessage> originalMessages) {
         if (userMessages == null) {
-            System.out.println("User messages is empty.");
-            System.exit(1);
+            throw new RuntimeException("No user messages.");
         } else if (originalMessages == null) {
-            System.out.println("Original messages is empty.");
-            System.exit(1);
+            throw new RuntimeException("No original messages.");
         }
 
         List<String> resultMessages = new ArrayList<>();

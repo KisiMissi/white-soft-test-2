@@ -15,8 +15,7 @@ public class JsonWriter {
         try {
             mapper.writeValue(new File(RESULT_FILE), messages);
         } catch (IOException ex) {
-            System.out.println("An error occurred while writing result messages to the file.\n" + ex);
-            System.exit(-1);
+            throw new RuntimeException("An error occurred while writing result messages to the file.");
         }
     }
 }
