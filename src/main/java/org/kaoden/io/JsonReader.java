@@ -10,47 +10,38 @@ import java.net.URL;
 import java.util.List;
 
 public class JsonReader {
-
-    private static final String DATA_FILE_PATH = "src/main/resources/data.json";
-    public static final String DATA_URL =
-            "https://raw.githubusercontent.com/thewhitesoft/student-2023-assignment/main/data.json";
-    public static final String REPLACEMENT_FILE_PATH = "src/main/resources/replacement.json";
-
     // Read data.json from classpath
-    public static String[] readUserMessages() {
+    public static String[] readUserMessages(String dataFilePath) {
         ObjectMapper mapper = new ObjectMapper();
-        File dataFile = new File(DATA_FILE_PATH);
+        File dataFile = new File(dataFilePath);
 
         fileExistenceCheck(dataFile);
 
-        String[] userMessages = null;
+        String[] userMessages;
         try {
             userMessages = mapper.readValue(dataFile, String[].class);
         } catch (IOException ex) {
-            System.out.println("An error occurred while reading file with user messages.\n" + ex);
-            System.exit(-1);
+            throw new RuntimeException("An error occurred while reading file with user messages.");
         }
         return userMessages;
     }
 
-    public static String[] readUserMessagesFromAPI() {
+    public static String[] readUserMessagesFromAPI(String dataFileURL) {
         ObjectMapper mapper = new ObjectMapper();
-        String[] userMessages = null;
+        String[] userMessages;
         try {
-            userMessages = mapper.readValue(new URL(DATA_URL), String[].class);
+            userMessages = mapper.readValue(new URL(dataFileURL), String[].class);
         } catch (MalformedURLException ex) {
-            System.out.println("An error occurred while forming the URL.\n" + ex);
-            System.exit(-1);
+            throw new IllegalArgumentException("An error occurred while forming the URL.");
         } catch (IOException ex) {
-            System.out.println("An error occurred while reading user messages.\n" + ex);
-            System.exit(-1);
+            throw new RuntimeException("An error occurred while reading user messages.");
         }
         return userMessages;
     }
 
-    public static List<OriginalMessage> readOriginalMessages() {
+    public static List<OriginalMessage> readOriginalMessages(String replacementFilePath) {
         ObjectMapper mapper = new ObjectMapper();
-        File replacementFile = new File(REPLACEMENT_FILE_PATH);
+        File replacementFile = new File(replacementFilePath);
 
         fileExistenceCheck(replacementFile);
 
@@ -58,16 +49,13 @@ public class JsonReader {
         try {
             originalMessages = List.of(mapper.readValue(replacementFile, OriginalMessage[].class));
         } catch (IOException ex) {
-            System.out.println("An error occurred while reading file with replaced messages.\n" + ex);
-            System.exit(-1);
+            throw new RuntimeException("An error occurred while reading file with replaced messages.");
         }
         return originalMessages;
     }
 
     private static void fileExistenceCheck(File file) {
-        if (! file.exists()) {
-            System.out.println("File: \"" + file.toPath() + "\" doesn't exists.");
-            System.exit(-1);
-        }
+        if (! file.exists())
+            throw new RuntimeException("File: \"" + file.toPath() + "\" doesn't exists.");
     }
 }
