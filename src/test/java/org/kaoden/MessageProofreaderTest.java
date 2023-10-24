@@ -10,6 +10,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MessageProofreaderTest {
 
+    private final MessageProofreader proofreader = new MessageProofreader();
+
     @Test
     @DisplayName("Проверка где data.json пустой")
     void testWithEmptyDataFile() {
@@ -33,7 +35,7 @@ class MessageProofreaderTest {
         String testReplacementPath = "src\\test\\resources\\proofreader\\replacement.json";
 
         // Act
-        List<String> actualList = new MessageProofreader().getCorrectedMessagesFromLocalFile(testDataPath, testReplacementPath);
+        List<String> actualList = proofreader.getCorrectedMessagesFromLocalFile(testDataPath, testReplacementPath);
 
         // Assert
         List<String> expectedList = Collections.singletonList("The quick brown fox jumps over the lazy dog.");
@@ -48,7 +50,7 @@ class MessageProofreaderTest {
         String testReplacementPath = "src\\test\\resources\\proofreader\\replacementWithoutNecessaryReplacements.json";
 
         // Act
-        List<String> actualList = new MessageProofreader().getCorrectedMessagesFromLocalFile(testDataPath, testReplacementPath);
+        List<String> actualList = proofreader.getCorrectedMessagesFromLocalFile(testDataPath, testReplacementPath);
 
         // Assert
         List<String> expectedList = Collections.singletonList("Th3 quick brown fox jumps ov3r th3 lazy dog.");
@@ -63,7 +65,7 @@ class MessageProofreaderTest {
         String testReplacementPath = "src\\test\\resources\\proofreader\\replacementWhereOneContainsAnother.json";
 
         // Act
-        List<String> actualList = new MessageProofreader().getCorrectedMessagesFromLocalFile(testDataPath, testReplacementPath);
+        List<String> actualList = proofreader.getCorrectedMessagesFromLocalFile(testDataPath, testReplacementPath);
 
         // Assert
         List<String> expectedList = Collections.singletonList("The quick brown fox jumps over the wall.");
